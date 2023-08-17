@@ -24,7 +24,7 @@ stages:
     - task: DeploymentPipelines-Assign@1
       inputs:
         pbiConnection: 'Power BI new'
-        pipeline: 'TEST'
+        pipeline: '$(PipelineName)'
         stageOrder: '0'
         workspace: 'Pipeline'
 
@@ -33,8 +33,8 @@ stages:
     - task: DeploymentPipelines-AddUser@1
       inputs:
         pbiConnection: 'Power BI new'
-        pipeline: 'TEST'
-        userUpn: 'anastasia.lahoiskaya@gmail.com'
+        pipeline: '$(PipelineName)'
+        userUpn: '$(UserEmail)'
 
 - stage: TestStage
   jobs:
@@ -43,7 +43,7 @@ stages:
     - task: DeploymentPipelines-Deploy@1
       inputs:
         pbiConnection: 'Power BI new'
-        pipeline: 'TEST'
+        pipeline: '$(PipelineName)'
         stageOrder: 'Test'
         deployType: 'All'
         waitForCompletion: true
@@ -62,8 +62,8 @@ stages:
     - task: Workspaces-AddUser@1
       inputs:
         pbiConnection: 'Power BI new'
-        workspace: 'TEST[Test]'
-        userUpn: 'anastasia.lahoiskaya@gmail.com'
+        workspace: '$(PipelineName)[Test]'
+        userUpn: '$(UserEmail)'
         permission: 'Admin'
 
 - stage: ProductionStage
@@ -73,7 +73,7 @@ stages:
     - task: DeploymentPipelines-Deploy@1
       inputs:
         pbiConnection: 'Power BI new'
-        pipeline: 'TEST'
+        pipeline: '$(PipelineName)'
         stageOrder: 'Production'
         deployType: 'All'
         waitForCompletion: true
@@ -92,6 +92,6 @@ stages:
      - task: Workspaces-AddUser@1
        inputs:
          pbiConnection: 'Power BI new'
-         workspace: 'TEST[Prod]'
-         userUpn: 'anastasia.lahoiskaya@gmail.com'
+         workspace: '$(PipelineName)[Prod]'
+         userUpn: '$(UserEmail)'
          permission: 'Admin'
