@@ -2,16 +2,46 @@ trigger:
 - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
-steps:
-- task: CopyFiles@2
-  inputs:
-    SourceFolder: '$(Build.SourcesDirectory)'
-    Contents: '**.pbix'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+stages:
+- stage: FirstStage
+  jobs:
+  - job: CreatePipeline
+    steps:
+    - script: echo Create a new pipeline in Power BI Service
+      displayName: 'Create a new pipeline'
+
+  - job: AssignWorkspace
+    steps:
+    - script: echo Assign a workspace to a pipeline stage
+      displayName: 'Assign a workspace to a pipeline stage'
+
+  - job: AddUserToPipeline
+    steps:
+    - script: echo Add a user to a pipeline
+      displayName: 'Add a user to a pipeline'
+
+- stage: TestStage
+  jobs:
+  - job: DeployContentToTest
+    steps:
+    - script: echo Deploy content to the Test stage
+      displayName: 'Deploy content to the Test stage'
+
+  - job: AddUserToWorkspaceTest
+    steps:
+    - script: echo Add a user to a workspace (Test)
+      displayName: 'Add a user to a workspace (Test)'
+
+- stage: ProductionStage
+  jobs:
+  - job: DeployContentToProduction
+    steps:
+    - script: echo Deploy content to the Production stage
+      displayName: 'Deploy content to the Production stage'
+
+  - job: AddUserToWorkspaceProduction
+    steps:
+    - script: echo Add a user to a workspace (Production)
+      displayName: 'Add a user to a workspace (Production)'
