@@ -14,39 +14,84 @@ stages:
   jobs:
   - job: createapipeline
     steps:
-    - script: Create a new pipeline
-      displayName: 'Create a new pipeline'
+    - task: DeploymentPipelines-Create@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        displayName: 'Create a new pipeline'
 
   - job: Assignaworkspacetoadeploymentpipeline
     steps:
-    - script: Assign a workspace to a pipeline stage
-      displayName: 'Assign a workspace to a pipeline stage'
+    - task: DeploymentPipelines-Assign@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        pipeline: '$(PipelineName)'
+        stageOrder: '0'
+        workspace: '$(WorkspaceName)'
 
   - job: AddaUserToaPipelineStage
     steps:
-    - script: Add a user to a pipeline
-      displayName: 'Add a user to a pipeline'
+    - task: DeploymentPipelines-AddUser@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        pipeline: '$(PipelineName)'
+        userUpn: 'anastasia.lahoiskaya@gmail.com'
 
 - stage: TestStage
   jobs:
   - job: DeployToTest
     steps:
-    - script: Deploy to the Test stage
-      displayName: 'Deploy content to the Test stage'
+    - task: DeploymentPipelines-Deploy@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        pipeline: '$(PipelineName)'
+        stageOrder: 'Test'
+        deployType: 'All'
+        waitForCompletion: true
+        createNewWS: true
+        newWsName: '$(PipelineName)[Test]'
+        allowCreateArtifact: true
+        allowOverwriteArtifact: true
+        updateApp: false
+        allowOverwriteTargetArtifactLabel: false
+        allowPurgeData: false
+        allowSkipTilesWithMissingPrerequisites: false
+        allowTakeOver: false
 
   - job: AddUserToWorkspaceTest
     steps:
-    - script: Add a user to a workspace (Test)
-      displayName: 'Add a user to a workspace (Test)'
+    - task: Workspaces-AddUser@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        workspace: '$(PipelineName)[Test]'
+        userUpn: 'anastasia.lahoiskaya@gmail.com'
+        permission: 'Admin'
 
 - stage: ProductionStage
   jobs:
   - job: DeployContentToProduction
     steps:
-    - script: Deploy content to the Production stage
-      displayName: 'Deploy content to the Production stage'
+    - task: DeploymentPipelines-Deploy@1
+      inputs:
+        pbiConnection: 'Power BI new'
+        pipeline: '$(PipelineName)'
+        stageOrder: 'Production'
+        deployType: 'All'
+        waitForCompletion: true
+        createNewWS: true
+        allowCreateArtifact: true
+        allowOverwriteArtifact: true
+        updateApp: false
+        allowOverwriteTargetArtifactLabel: false
+        allowPurgeData: false
+        allowSkipTilesWithMissingPrerequisites: false
+        allowTakeOver: false
+
 
   - job: AddUserToWorkspaceProduction
     steps:
-    - script: Add a user to a workspace (Production)
-      displayName: 'Add a user to a workspace (Production)'
+     - task: Workspaces-AddUser@1
+       inputs:
+         pbiConnection: 'Power BI new'
+         workspace: '$(PipelineName)[Prod]'
+         userUpn: 'anastasia.lahoiskaya@gmail.com'
+         permission: 'Admin'
