@@ -4,6 +4,11 @@ trigger:
 pool:
   vmImage: 'windows-latest'
 
+variables:
+  PipelineName: 'Demo'
+  UserEmail: 'anastasia.lahoiskaya@gmail.com'
+  WorkspaceName: 'Pipeline'
+
   jobs:
   - job: Build
   steps:
