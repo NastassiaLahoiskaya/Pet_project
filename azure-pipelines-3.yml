@@ -1,0 +1,52 @@
+trigger:
+- push
+
+pool:
+  vmImage: 'windows-latest'
+
+  jobs:
+  - job: Build
+  steps:
+  - checkout: self 
+
+stages:
+- stage: FirstStage
+  jobs:
+  - job: createapipeline
+    steps:
+    - script: Create a new pipeline
+      displayName: 'Create a new pipeline'
+
+  - job: Assignaworkspacetoadeploymentpipeline
+    steps:
+    - script: Assign a workspace to a pipeline stage
+      displayName: 'Assign a workspace to a pipeline stage'
+
+  - job: AddaUserToaPipelineStage
+    steps:
+    - script: Add a user to a pipeline
+      displayName: 'Add a user to a pipeline'
+
+- stage: TestStage
+  jobs:
+  - job: DeployToTest
+    steps:
+    - script: Deploy to the Test stage
+      displayName: 'Deploy content to the Test stage'
+
+  - job: AddUserToWorkspaceTest
+    steps:
+    - script: Add a user to a workspace (Test)
+      displayName: 'Add a user to a workspace (Test)'
+
+- stage: ProductionStage
+  jobs:
+  - job: DeployContentToProduction
+    steps:
+    - script: Deploy content to the Production stage
+      displayName: 'Deploy content to the Production stage'
+
+  - job: AddUserToWorkspaceProduction
+    steps:
+    - script: Add a user to a workspace (Production)
+      displayName: 'Add a user to a workspace (Production)'
