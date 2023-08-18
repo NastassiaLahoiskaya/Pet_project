@@ -4,44 +4,30 @@ trigger:
 pool:
   vmImage: windows-latest
 
-
-variables:
-  PipelineName: 'Demo'
-  UserEmail: 'anastasia.lahoiskaya@gmail.com'
-  WorkspaceName: 'DEVELOPMENT'
-
 stages:
 - stage: FirstStage
   jobs:
-  - job: createapipeline
+  - job: copyfile
     steps:
-    - task: DeploymentPipelines-Create@1
+    - task: CopyFiles@2
       inputs:
-        pbiConnection: 'Power BI'
-        displayName: 'Create a new pipeline'
-
-  - job: Assignaworkspacetoadeploymentpipeline
-    steps:
-    - task: DeploymentPipelines-Assign@1
+        SourceFolder: '$(Build.SourcesDirectory)'
+        Contents: '**.pbix'
+        TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    - task: PublishBuildArtifacts@1
       inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        stageOrder: '0'
-        workspace: 'DEV'
-
-  - job: AddaUserToaPipelineStage
-    steps:
-    - task: DeploymentPipelines-AddUser@1
-      inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        userUpn: '$(UserEmail)'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
 
 - stage: TestStage
   jobs:
   - job: DeployToTest
+    variables:
+      PipelineName: 'Demo'
+      UserEmail: 'anastasia.lahoiskaya@gmail.com'
+      WorkspaceName: 'DEVELOPMENT'
     steps:
-
     - task: DeploymentPipelines-Deploy@1
       inputs:
         pbiConnection: 'Power BI'
@@ -50,7 +36,7 @@ stages:
         deployType: 'All'
         waitForCompletion: true
         createNewWS: true
-        newWsName: '$(PipelineName)[Test]'
+        newWsName: '$(WorkspaceName)'
         allowCreateArtifact: true
         allowOverwriteArtifact: true
         updateApp: false
@@ -58,18 +44,23 @@ stages:
         allowPurgeData: false
         allowSkipTilesWithMissingPrerequisites: false
         allowTakeOver: false
+
   - job: AddUserToWorkspaceTest
     steps:
     - task: Workspaces-AddUser@1
       inputs:
         pbiConnection: 'Power BI'
-        workspace: '$(PipelineName)[Test]'
+        workspace: '$(WorkspaceName)'
         userUpn: '$(UserEmail)'
         permission: 'Admin'
 
 - stage: ProductionStage
   jobs:
   - job: DeployContentToProduction
+    variables:
+      PipelineName: 'Demo'
+      UserEmail: 'anastasia.lahoiskaya@gmail.com'
+      WorkspaceName: 'DEVELOPMENT'
     steps:
     - task: DeploymentPipelines-Deploy@1
       inputs:
@@ -87,12 +78,11 @@ stages:
         allowSkipTilesWithMissingPrerequisites: false
         allowTakeOver: false
 
-
   - job: AddUserToWorkspaceProduction
     steps:
      - task: Workspaces-AddUser@1
        inputs:
          pbiConnection: 'Power BI'
-         workspace: '$(PipelineName)[Prod]'
+         workspace: '$(WorkspaceName)'
          userUpn: '$(UserEmail)'
          permission: 'Admin'
