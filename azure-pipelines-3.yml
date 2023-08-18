@@ -15,7 +15,7 @@ variables:
   WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
   ReportFilesPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
 
-  job: CopyReportAndCreatePipeline
+- job: CopyReportAndCreatePipeline
   steps:
   - checkout: self
 
