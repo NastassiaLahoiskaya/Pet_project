@@ -2,7 +2,7 @@ trigger:
 - main
 
 pool:
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
 
 steps:
 - task: CopyFiles@2
@@ -10,10 +10,8 @@ steps:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**.pbix'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-- task: PowerBIActions@5
+- task: PublishBuildArtifacts@1
   inputs:
-    PowerBIServiceEndpoint: 'Power BI Service Connection'
-    Action: 'Publish'
-    WorkspaceName: 'Dev'
-    PowerBIPath: '$(System.DefaultWorkingDirectory)/_NastassiaLahoiskaya.Pet_project (5)/drop/pet_project.pbix'
-
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
