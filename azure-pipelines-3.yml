@@ -8,7 +8,7 @@ pool:
 variables:
   PipelineName: 'Demo'
   UserEmail: 'anastasia.lahoiskaya@gmail.com'
-  WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
+  WorkspaceName: 'DEVELOPMENT'
 
 stages:
 - stage: FirstStage
@@ -27,7 +27,7 @@ stages:
         pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         stageOrder: '0'
-        workspace: 'DEVELOPMENT'
+        workspace: 'DEV'
 
   - job: AddaUserToaPipelineStage
     steps:
