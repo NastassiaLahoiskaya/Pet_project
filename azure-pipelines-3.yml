@@ -13,6 +13,25 @@ variables:
   PipelineName: 'Demo'
   UserEmail: 'anastasia.lahoiskaya@gmail.com'
   WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
+  ReportFilesPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
+
+  job: CopyReportAndCreatePipeline
+  steps:
+  - checkout: self
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: '$(ReportFilesPath)'
+      Contents: '**'
+      TargetFolder: '$(System.DefaultWorkingDirectory)'
+
+  - task: PublishPipelineInPowerBI@1
+    inputs:
+      pbiConnection: 'Power BI new'
+      displayName: 'Create or Update Deployment Pipeline'
+      definitionPath: '$(System.DefaultWorkingDirectory)'
+      pipelineName: '$(PipelineName)'
+      overwrite: true 
 
 stages:
 - stage: FirstStage
