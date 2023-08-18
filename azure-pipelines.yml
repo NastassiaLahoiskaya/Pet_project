@@ -2,111 +2,18 @@ trigger:
 - main
 
 pool:
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
 
-  jobs:
-  - job: Build
-    steps:
-    - task: CopyFiles@2
-      inputs:
-       SourceFolder: '$(Build.SourcesDirectory)'
-       Contents: '**.pbix'
-       TargetFolder: '$(Build.ArtifactStagingDirectory)'
-    - task: PublishBuildArtifacts@1
-      inputs:
-       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+steps:
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: '**.pbix'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
 
-variables:
-  PipelineName: 'Demo'
-  UserEmail: 'anastasia.lahoiskaya@gmail.com'
-  WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
-
-stages:
-- stage: FirstStage
-  jobs:
-  - job: createapipeline
-    steps:
-    - task: DeploymentPipelines-Create@1
-      inputs:
-        pbiConnection: 'Power BI'
-        displayName: 'Create a new pipeline'
-
-  - job: Assignaworkspacetoadeploymentpipeline
-    steps:
-    - task: DeploymentPipelines-Assign@1
-      inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        stageOrder: '0'
-        workspace: 'DEVELOPMENT'
-
-  - job: AddaUserToaPipelineStage
-    steps:
-    - task: DeploymentPipelines-AddUser@1
-      inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        userUpn: '$(UserEmail)'
-
-- stage: TestStage
-  jobs:
-  - job: DeployToTest
-    steps:
-
-    - task: DeploymentPipelines-Deploy@1
-      inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        stageOrder: 'Test'
-        deployType: 'All'
-        waitForCompletion: true
-        createNewWS: true
-        newWsName: '$(PipelineName)[Test]'
-        allowCreateArtifact: true
-        allowOverwriteArtifact: true
-        updateApp: false
-        allowOverwriteTargetArtifactLabel: false
-        allowPurgeData: false
-        allowSkipTilesWithMissingPrerequisites: false
-        allowTakeOver: false
-  - job: AddUserToWorkspaceTest
-    steps:
-    - task: Workspaces-AddUser@1
-      inputs:
-        pbiConnection: 'Power BI'
-        workspace: '$(PipelineName)[Test]'
-        userUpn: '$(UserEmail)'
-        permission: 'Admin'
-
-- stage: ProductionStage
-  jobs:
-  - job: DeployContentToProduction
-    steps:
-    - task: DeploymentPipelines-Deploy@1
-      inputs:
-        pbiConnection: 'Power BI'
-        pipeline: '$(PipelineName)'
-        stageOrder: 'Production'
-        waitForCompletion: true
-        deployType: 'All'
-        createNewWS: true
-        allowCreateArtifact: true
-        allowOverwriteArtifact: true
-        updateApp: false
-        allowOverwriteTargetArtifactLabel: false
-        allowPurgeData: false
-        allowSkipTilesWithMissingPrerequisites: false
-        allowTakeOver: false
-
-
-  - job: AddUserToWorkspaceProduction
-    steps:
-     - task: Workspaces-AddUser@1
-       inputs:
-         pbiConnection: 'Power BI'
-         workspace: '$(PipelineName)[Prod]'
-         userUpn: '$(UserEmail)'
-         permission: 'Admin'
