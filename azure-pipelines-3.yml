@@ -13,25 +13,7 @@ variables:
   PipelineName: 'Demo'
   UserEmail: 'anastasia.lahoiskaya@gmail.com'
   WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
-  ReportFilesPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
 
-  job: CopyReportAndCreatePipeline
-  steps:
-
-
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: '$(ReportFilesPath)'
-      Contents: '*.pbix'
-      TargetFolder: '$(System.DefaultWorkingDirectory)'
-
-  - task: PublishPipelineInPowerBI@1
-    inputs:
-      pbiConnection: 'Power BI new'
-      displayName: 'Create or Update Deployment Pipeline'
-      definitionPath: '$(System.DefaultWorkingDirectory)'
-      pipelineName: '$(PipelineName)'
-      overwrite: true 
 
 stages:
 - stage: FirstStage
@@ -90,32 +72,3 @@ stages:
         userUpn: '$(UserEmail)'
         permission: 'Admin'
 
-- stage: ProductionStage
-  jobs:
-  - job: DeployContentToProduction
-    steps:
-    - task: DeploymentPipelines-Deploy@1
-      inputs:
-        pbiConnection: 'Power BI new'
-        pipeline: '$(PipelineName)'
-        stageOrder: 'Production'
-        deployType: 'All'
-        waitForCompletion: true
-        createNewWS: true
-        allowCreateArtifact: true
-        allowOverwriteArtifact: true
-        updateApp: false
-        allowOverwriteTargetArtifactLabel: false
-        allowPurgeData: false
-        allowSkipTilesWithMissingPrerequisites: false
-        allowTakeOver: false
-
-
-  - job: AddUserToWorkspaceProduction
-    steps:
-     - task: Workspaces-AddUser@1
-       inputs:
-         pbiConnection: 'Power BI new'
-         workspace: '$(PipelineName)[Prod]'
-         userUpn: '$(UserEmail)'
-         permission: 'Admin'
