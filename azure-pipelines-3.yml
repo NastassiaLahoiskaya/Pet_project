@@ -15,14 +15,14 @@ variables:
   WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
   ReportFilesPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
 
-- job: CopyReportAndCreatePipeline
+  job: CopyReportAndCreatePipeline
   steps:
   - checkout: self
 
   - task: CopyFiles@2
     inputs:
       SourceFolder: '$(ReportFilesPath)'
-      Contents: '**'
+      Contents: '*.pbix'
       TargetFolder: '$(System.DefaultWorkingDirectory)'
 
   - task: PublishPipelineInPowerBI@1
