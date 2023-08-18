@@ -17,7 +17,7 @@ variables:
 
   job: CopyReportAndCreatePipeline
   steps:
-  - checkout: self
+
 
   - task: CopyFiles@2
     inputs:
