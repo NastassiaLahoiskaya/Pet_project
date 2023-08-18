@@ -12,7 +12,7 @@ pool:
 variables:
   PipelineName: 'Demo'
   UserEmail: 'anastasia.lahoiskaya@gmail.com'
-  WorkspaceName: 'Pipeline'
+  WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
 
 stages:
 - stage: FirstStage
