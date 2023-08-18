@@ -16,5 +16,6 @@ steps:
   inputs:
     PowerBIPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
     Username: 'devops'
+    Password: 'B_P8Q~znCgHlVM1jnDyhxZJWVFSejtgTBwZsJdzF'
     ClientId: 'e5464df8-bc47-4114-9a12-acc363c8d316'
     GroupName: 'Power BI Admins'
