@@ -54,9 +54,10 @@ stages:
   jobs:
   - job: DeployToTest
     steps:
+
     - task: DeploymentPipelines-Deploy@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         stageOrder: 'Test'
         deployType: 'All'
@@ -70,12 +71,11 @@ stages:
         allowPurgeData: false
         allowSkipTilesWithMissingPrerequisites: false
         allowTakeOver: false
-
   - job: AddUserToWorkspaceTest
     steps:
     - task: Workspaces-AddUser@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         workspace: '$(PipelineName)[Test]'
         userUpn: '$(UserEmail)'
         permission: 'Admin'
@@ -86,11 +86,11 @@ stages:
     steps:
     - task: DeploymentPipelines-Deploy@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         stageOrder: 'Production'
-        deployType: 'All'
         waitForCompletion: true
+        deployType: 'All'
         createNewWS: true
         allowCreateArtifact: true
         allowOverwriteArtifact: true
@@ -105,7 +105,7 @@ stages:
     steps:
      - task: Workspaces-AddUser@1
        inputs:
-         pbiConnection: 'Power BI new'
+         pbiConnection: 'Power BI'
          workspace: '$(PipelineName)[Prod]'
          userUpn: '$(UserEmail)'
          permission: 'Admin'
