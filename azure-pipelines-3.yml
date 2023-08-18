@@ -2,18 +2,13 @@ trigger:
 - push
 
 pool:
-  vmImage: 'windows-latest'
+  vmImage: windows-latest
 
-  jobs:
-  - job: Build
-  steps:
-  - checkout: self 
 
 variables:
   PipelineName: 'Demo'
   UserEmail: 'anastasia.lahoiskaya@gmail.com'
   WorkspaceName: 'powerbi://api.powerbi.com/v1.0/myorg/Pipeline'
-
 
 stages:
 - stage: FirstStage
@@ -22,23 +17,23 @@ stages:
     steps:
     - task: DeploymentPipelines-Create@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         displayName: 'Create a new pipeline'
 
   - job: Assignaworkspacetoadeploymentpipeline
     steps:
     - task: DeploymentPipelines-Assign@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         stageOrder: '0'
-        workspace: 'Pipeline'
+        workspace: 'DEVELOPMENT'
 
   - job: AddaUserToaPipelineStage
     steps:
     - task: DeploymentPipelines-AddUser@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         userUpn: '$(UserEmail)'
 
@@ -46,9 +41,10 @@ stages:
   jobs:
   - job: DeployToTest
     steps:
+
     - task: DeploymentPipelines-Deploy@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         pipeline: '$(PipelineName)'
         stageOrder: 'Test'
         deployType: 'All'
@@ -62,13 +58,41 @@ stages:
         allowPurgeData: false
         allowSkipTilesWithMissingPrerequisites: false
         allowTakeOver: false
-
   - job: AddUserToWorkspaceTest
     steps:
     - task: Workspaces-AddUser@1
       inputs:
-        pbiConnection: 'Power BI new'
+        pbiConnection: 'Power BI'
         workspace: '$(PipelineName)[Test]'
         userUpn: '$(UserEmail)'
         permission: 'Admin'
 
+- stage: ProductionStage
+  jobs:
+  - job: DeployContentToProduction
+    steps:
+    - task: DeploymentPipelines-Deploy@1
+      inputs:
+        pbiConnection: 'Power BI'
+        pipeline: '$(PipelineName)'
+        stageOrder: 'Production'
+        waitForCompletion: true
+        deployType: 'All'
+        createNewWS: true
+        allowCreateArtifact: true
+        allowOverwriteArtifact: true
+        updateApp: false
+        allowOverwriteTargetArtifactLabel: false
+        allowPurgeData: false
+        allowSkipTilesWithMissingPrerequisites: false
+        allowTakeOver: false
+
+
+  - job: AddUserToWorkspaceProduction
+    steps:
+     - task: Workspaces-AddUser@1
+       inputs:
+         pbiConnection: 'Power BI'
+         workspace: '$(PipelineName)[Prod]'
+         userUpn: '$(UserEmail)'
+         permission: 'Admin'
