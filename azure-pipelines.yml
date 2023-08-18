@@ -1,9 +1,8 @@
-
 trigger:
 - main
 
 pool:
-  vmImage: windows-latest
+  vmImage: ubuntu-latest
 
 steps:
 - task: CopyFiles@2
@@ -11,11 +10,8 @@ steps:
     SourceFolder: '$(Build.SourcesDirectory)'
     Contents: '**.pbix'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
-
-- task: PublishPowerBIFile@1
+- task: PublishBuildArtifacts@1
   inputs:
-    PowerBIPath: 'https://github.com/NastassiaLahoiskaya/Pet_project'
-    Username: 'devops'
-    Password: 'B_P8Q~znCgHlVM1jnDyhxZJWVFSejtgTBwZsJdzF'
-    ClientId: 'e5464df8-bc47-4114-9a12-acc363c8d316'
-    GroupName: 'Power BI Admins'
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
